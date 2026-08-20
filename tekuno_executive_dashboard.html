@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekuno - Dashboard Ejecutivo de Soluciones Tecnológicas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        tekuno: {
+                            dark: '#111217',
+                            card: '#1a1c23',
+                            border: '#2e323b',
+                            primary: '#ea580c',
+                            accent: '#f97316',
+                            lightOrange: '#fb923c',
+                            hover: '#c2410c',
+                            glow: 'rgba(249, 115, 22, 0.2)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 25px -5px rgba(249, 115, 22, 0.3)',
+                        'glow-lg': '0 0 50px -10px rgba(234, 88, 12, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #111217;
+            color: #f4f4f5;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(26, 28, 35, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(38, 41, 50, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(249, 115, 22, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -10px rgba(249, 115, 22, 0.2);
+        }
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(249, 115, 22, 0.12) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #fb923c 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-accent {
+            background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.3) 0%, rgba(249, 115, 22, 0.1) 100%);
+            border-color: #f97316;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.25);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111217;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ea580c;
+        }
+        /* Pulse Animation */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 0.75; }
+        }
+        .pulse-glow {
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-grid-pattern selection:bg-orange-500 selection:text-zinc-950">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-zinc-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo & Brand Name -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchSection('overview')">
+                    <div class="w-11 h-11 rounded-xl gradient-accent flex items-center justify-center text-zinc-950 font-black text-2xl shadow-glow">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl font-extrabold tracking-tight text-white">TEKUNO</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-orange-950/80 text-orange-400 border border-orange-800/60 font-semibold uppercase">MX</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 font-medium tracking-wide">Soluciones Tecnológicas Inteligentes</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="switchSection('overview')" id="nav-overview" class="nav-link text-xs lg:text-sm font-semibold px-3 py-2 rounded-lg text-orange-400 hover:text-white transition flex items-center space-x-2 bg-zinc-800/60">
+                        <i class="fa-solid fa-chart-pie text-orange-400"></i>
+                        <span>Visión General</span>
+                    </button>
+                    <button onclick="switchSection('solutions')" id="nav-solutions" class="nav-link text-xs lg:text-sm font-medium px-3 py-2 rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-layer-group text-zinc-400"></i>
+                        <span>Soluciones</span>
+                    </button>
+                    <button onclick="switchSection('alliances')" id="nav-alliances" class="nav-link text-xs lg:text-sm font-medium px-3 py-2 rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-handshake text-zinc-400"></i>
+                        <span>Aliados & Software</span>
+                    </button>
+                    <button onclick="switchSection('cases')" id="nav-cases" class="nav-link text-xs lg:text-sm font-medium px-3 py-2 rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-trophy text-zinc-400"></i>
+                        <span>Casos de Éxito</span>
+                    </button>
+                    <button onclick="switchSection('roi')" id="nav-roi" class="nav-link text-xs lg:text-sm font-medium px-3 py-2 rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-calculator text-zinc-400"></i>
+                        <span>Calculadora ROI</span>
+                    </button>
+                    <button onclick="switchSection('demos')" id="nav-demos" class="nav-link text-xs lg:text-sm font-medium px-3 py-2 rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-laptop-code text-zinc-400"></i>
+                        <span>Simulador Demos</span>
+                    </button>
+                </nav>
+
+                <!-- Action Button & Presentation Mode Toggle -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <button onclick="togglePresentationMode()" id="btn-presentation" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-expand text-orange-400"></i>
+                        <span>Modo Presentación CEO</span>
+                    </button>
+                    <button onclick="openProposalModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-orange-400 text-zinc-950 hover:opacity-95 shadow-glow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>Generar Propuesta</span>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="p-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:text-white">
+                        <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-zinc-800 px-4 pt-2 pb-6 space-y-2">
+            <button onclick="switchSection('overview'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-orange-400 bg-zinc-800/60 flex items-center space-x-3">
+                <i class="fa-solid fa-chart-pie"></i><span>Visión General</span>
+            </button>
+            <button onclick="switchSection('solutions'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:bg-zinc-800/60 flex items-center space-x-3">
+                <i class="fa-solid fa-layer-group"></i><span>Soluciones Tecnológicas</span>
+            </button>
+            <button onclick="switchSection('alliances'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:bg-zinc-800/60 flex items-center space-x-3">
+                <i class="fa-solid fa-handshake"></i><span>Aliados & Software</span>
+            </button>
+            <button onclick="switchSection('cases'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:bg-zinc-800/60 flex items-center space-x-3">
+                <i class="fa-solid fa-trophy"></i><span>Casos de Éxito</span>
+            </button>
+            <button onclick="switchSection('roi'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:bg-zinc-800/60 flex items-center space-x-3">
+                <i class="fa-solid fa-calculator"></i><span>Calculadora de ROI</span>
+            </button>
+            <button onclick="switchSection('demos'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:bg-zinc-800/60 flex items-center space-x-3">
+                <i class="fa-solid fa-laptop-code"></i><span>Simulador de Demos</span>
+            </button>
+            <div class="pt-2 flex flex-col space-y-2">
+                <button onclick="togglePresentationMode(); toggleMobileMenu();" class="w-full py-2.5 rounded-xl text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-expand text-orange-400"></i>
+                    <span>Modo Presentación</span>
+                </button>
+                <button onclick="openProposalModal(); toggleMobileMenu();" class="w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-orange-400 text-zinc-950 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <span>Generar Propuesta Personalizada</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- EXECUTIVE HERO BANNER -->
+        <div class="relative rounded-3xl overflow-hidden glass-panel border border-zinc-800 p-6 md:p-10 mb-10 shadow-glow-lg">
+            <!-- Background Glow Decorators -->
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none pulse-glow"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-600/10 rounded-full blur-3xl pointer-events-none pulse-glow"></div>
+
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-5">
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-orange-500/30 text-orange-400 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span>
+                        <i class="fa-solid fa-bolt text-xs"></i>
+                        <span>Presentación de Capacidades Operativas y Tecnológicas</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        Transformación Digital e <span class="gradient-text">Innovación con Propósito</span>
+                    </h1>
+
+                    <p class="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                        En <strong class="text-white">Tekuno</strong>, impulsamos la eficiencia de empresas, clubes, administradoras y gobierno en México mediante <strong>desarrollo de software a la medida</strong>, integración ERP con <strong>Odoo</strong>, gestión documental con <strong>Laserfiche</strong>, e implementación de bots <strong>RPA</strong>.
+                    </p>
+
+                    <!-- Key Highlighting Pillars -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                        <div class="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center space-x-3">
+                            <i class="fa-solid fa-boxes-stacked text-orange-400 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-white">Ecosistema ERP</p>
+                                <p class="text-[10px] text-zinc-400">Odoo Oficial & CFDI</p>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center space-x-3">
+                            <i class="fa-solid fa-file-shield text-orange-400 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-white">Laserfiche ECM</p>
+                                <p class="text-[10px] text-zinc-400">Digitalización & Firma</p>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center space-x-3 col-span-2 sm:col-span-1">
+                            <i class="fa-solid fa-robot text-orange-400 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-white">RPA & Chatbots</p>
+                                <p class="text-[10px] text-zinc-400">Automatización 24/7</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Showcase Sidebar -->
+                <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+                    <div class="glass-card p-5 rounded-2xl border border-zinc-800 text-center">
+                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                        <div class="text-3xl font-extrabold text-white tracking-tight" id="kpi-projects">150+</div>
+                        <p class="text-xs text-zinc-400 mt-1 font-medium">Proyectos Desplegados</p>
+                        <p class="text-[10px] text-orange-400 mt-1 font-semibold">100% Entregados a Tiempo</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-zinc-800 text-center">
+                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-gauge-high"></i>
+                        </div>
+                        <div class="text-3xl font-extrabold text-white tracking-tight" id="kpi-speed">99/100</div>
+                        <p class="text-xs text-zinc-400 mt-1 font-medium">Score Optimización Web</p>
+                        <p class="text-[10px] text-emerald-400 mt-1 font-semibold">Desempeño Ultra Rápido</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-zinc-800 text-center">
+                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="text-3xl font-extrabold text-white tracking-tight" id="kpi-time">-65%</div>
+                        <p class="text-xs text-zinc-400 mt-1 font-medium">Tiempo Operativo Reducido</p>
+                        <p class="text-[10px] text-orange-400 mt-1 font-semibold">Mediante Bots & Workflows</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-zinc-800 text-center">
+                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-smile-beam"></i>
+                        </div>
+                        <div class="text-3xl font-extrabold text-white tracking-tight" id="kpi-satisfaction">98.8%</div>
+                        <p class="text-xs text-zinc-400 mt-1 font-medium">Satisfacción Cliente</p>
+                        <p class="text-[10px] text-emerald-400 mt-1 font-semibold">Soporte Continuo Ágil</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 1: OVERVIEW & DASHBOARD ANALYTICS -->
+        <section id="section-overview" class="tab-content space-y-8">
+            
+            <!-- Company Profile & Core Values -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 rounded-xl bg-orange-950/60 border border-orange-800/50 text-orange-400">
+                            <i class="fa-solid fa-bullseye text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">¿Quiénes Somos?</h3>
+                    </div>
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        Tekuno es una empresa de soluciones tecnológicas especializada en potenciar a las organizaciones mediante la automatización de procesos, desarrollo de software web y móvil, y la estructuración de sistemas ERP/ECM adaptados al mercado mexicano.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 rounded-xl bg-orange-950/60 border border-orange-800/50 text-orange-400">
+                            <i class="fa-solid fa-handshake-angle text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Metodología & Valores</h3>
+                    </div>
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        Nuestro enfoque integra metodologías ágiles (Scrum), comunicación unificada y reportes semanales transparentes. Creemos en el trato humano, la solidaridad tecnológica y entregas estrictas dentro de tiempo y presupuesto.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 rounded-xl bg-orange-950/60 border border-orange-800/50 text-orange-400">
+                            <i class="fa-solid fa-shield-halved text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Garantía Operativa</h3>
+                    </div>
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        Garantizamos cero tiempo de inactividad durante migraciones críticas, mantenimiento continuo para WordPress y plataformas personalizadas, así como cumplimiento total de normativas fiscales (CFDI 4.0) y seguridad de datos.
+                    </p>
+                </div>
+            </div>
+
+            <!-- DYNAMIC EXECUTIVE CHARTS -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Chart 1: Efficiency & Time Savings -->
+                <div class="lg:col-span-7 glass-panel p-6 rounded-2xl border border-zinc-800">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-column text-orange-400"></i>
+                                <span>Impacto en Eficiencia Operativa (Antes vs Después)</span>
+                            </h3>
+                            <p class="text-xs text-zinc-400 mt-1">Horas semanales dedicadas a tareas manuales por área operativa</p>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-400 border border-emerald-800/50">
+                            -65% Tiempos
+                        </span>
+                    </div>
+                    <div class="h-64 sm:h-80 relative">
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Sectorial Distribution -->
+                <div class="lg:col-span-5 glass-panel p-6 rounded-2xl border border-zinc-800">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                                <i class="fa-solid fa-pie-chart text-orange-400"></i>
+                                <span>Distribución por Sector de Clientes</span>
+                            </h3>
+                            <p class="text-xs text-zinc-400 mt-1">Proyectos activos e implementaciones clave</p>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-orange-950/80 text-orange-400 border border-orange-800/50">
+                            Multisector
+                        </span>
+                    </div>
+                    <div class="h-64 sm:h-80 relative flex items-center justify-center">
+                        <canvas id="sectorChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 3: ROI Accumulation Timeline -->
+            <div class="glass-panel p-6 rounded-2xl border border-zinc-800">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-line text-orange-400"></i>
+                            <span>Trayectoria Promedio del Retorno de Inversión (ROI a 12 Meses)</span>
+                        </h3>
+                        <p class="text-xs text-zinc-400 mt-1">Ahorros financieros acumulados vs costo inicial de digitalización</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-1 text-xs text-zinc-300">
+                            <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+                            <span>Ahorro Acumulado ($ MXN)</span>
+                        </div>
+                        <div class="flex items-center space-x-1 text-xs text-zinc-300">
+                            <span class="w-3 h-3 rounded-full bg-zinc-600"></span>
+                            <span>Punto de Equilibrio</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-60 sm:h-72 relative">
+                    <canvas id="roiTimelineChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TEKUNO SOLUTIONS PORTFOLIO -->
+        <section id="section-solutions" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Ecosistema Integrado de Soluciones</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm">
+                    Desde software hecho a la medida hasta potentes plataformas ERP y gestión documental corporativa.
+                </p>
+            </div>
+
+            <!-- Interactive Filter Tabs for Solutions -->
+            <div class="flex flex-wrap items-center justify-center gap-2 pb-2">
+                <button onclick="filterSolutions('all')" class="sol-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-orange-500 text-zinc-950 transition">Todas</button>
+                <button onclick="filterSolutions('custom')" class="sol-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white transition">Software a Medida</button>
+                <button onclick="filterSolutions('erp')" class="sol-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white transition">ERP Odoo & Laserfiche</button>
+                <button onclick="filterSolutions('automation')" class="sol-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white transition">RPA & Chatbots</button>
+                <button onclick="filterSolutions('verticals')" class="sol-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white transition">Soluciones Sectoriales</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="solutions-grid">
+                
+                <!-- Card 1: Custom Software -->
+                <div class="glass-card p-6 rounded-2xl border border-zinc-800 solution-item" data-category="custom">
+                    <div class="w-12 h-12 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400 text-xl mb-4">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-orange-400 px-2 py-0.5 rounded bg-orange-950/80 border border-orange-800">Desarrollo Web & Móvil</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Software a la Medida</h3>
+                    <p class="text-zinc-300 text-xs mt-2 leading-relaxed">
+                        Construcción de plataformas web, aplicaciones móviles nativas o híbridas (iOS/Android), APIs REST personalizadas y microservicios diseñados específicamente para resolver cuellos de botella del negocio.
+                    </p>
+                    <ul class="mt-4 space-y-1.5 text-xs text-zinc-400">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Desempeño optimizado (Lighthouse 95+)</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Arquitectura en la nube (AWS / Azure)</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Diseño UX/UI intuitivo y responsive</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Odoo ERP -->
+                <div class="glass-card p-6 rounded-2xl border border-zinc-800 solution-item" data-category="erp">
+                    <div class="w-12 h-12 rounded-xl bg-amber-950/60 border border-amber-800/50 flex items-center justify-center text-amber-400 text-xl mb-4">
+                        <i class="fa-solid fa-boxes-packing"></i>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 px-2 py-0.5 rounded bg-amber-950/80 border border-amber-800">Implementación Odoo</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Gestión Empresarial Odoo ERP</h3>
+                    <p class="text-zinc-300 text-xs mt-2 leading-relaxed">
+                        Consolidación de procesos en un solo sistema modular: CRM, Ventas, Inventarios, Compras, Contabilidad y Facturación electrónica SAT (CFDI 4.0) de forma completamente integrada.
+                    </p>
+                    <ul class="mt-4 space-y-1.5 text-xs text-zinc-400">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i><span>Personalización de módulos a medida</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i><span>Capacitación integral a colaboradores</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i><span>Migración segura de bases de datos</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Laserfiche ECM -->
+                <div class="glass-card p-6 rounded-2xl border border-zinc-800 solution-item" data-category="erp">
+                    <div class="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-orange-400 text-xl mb-4">
+                        <i class="fa-solid fa-folder-tree"></i>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-orange-400 px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700">Digitalización Empresarial</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Laserfiche ECM & Digitalización</h3>
+                    <p class="text-zinc-300 text-xs mt-2 leading-relaxed">
+                        Plataforma líder para la gestión de contenido empresarial, automatización de formularios digitales, flujos de trabajo documentales, archivo electrónico y firma digital con validez oficial.
+                    </p>
+                    <ul class="mt-4 space-y-1.5 text-xs text-zinc-400">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Cumplimiento normativo y auditoría</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Cero papel en trámites corporativos</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Aprobaciones automatizadas multi-nivel</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: RPA & Chatbots -->
+                <div class="glass-card p-6 rounded-2xl border border-zinc-800 solution-item" data-category="automation">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-950/60 border border-emerald-800/50 flex items-center justify-center text-emerald-400 text-xl mb-4">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800">Automatización Inteligente</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Bot RPA & Chatbots</h3>
+                    <p class="text-zinc-300 text-xs mt-2 leading-relaxed">
+                        Robots de software que ejecutan tareas repetitivas (extracción de datos, procesamiento de facturas, conciliaciones) y Chatbots conversacionales integrados con WhatsApp y Web.
+                    </p>
+                    <ul class="mt-4 space-y-1.5 text-xs text-zinc-400">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-emerald-400 text-[10px]"></i><span>Operación continua 24 horas al día, 7 días</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-emerald-400 text-[10px]"></i><span>Reducción de margen de error a 0%</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-emerald-400 text-[10px]"></i><span>Integración con sistemas heredados</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 5: Residential & Condos -->
+                <div class="glass-card p-6 rounded-2xl border border-zinc-800 solution-item" data-category="verticals">
+                    <div class="w-12 h-12 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400 text-xl mb-4">
+                        <i class="fa-solid fa-building-user"></i>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-orange-400 px-2 py-0.5 rounded bg-orange-950/80 border border-orange-800">Sector Residencial</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Gestión de Fraccionamientos</h3>
+                    <p class="text-zinc-300 text-xs mt-2 leading-relaxed">
+                        Solución integral para administradores de condominios: control de accesos QR, cobro de cuotas de mantenimiento, estados de cuenta automatizados y comunicación interna.
+                    </p>
+                    <ul class="mt-4 space-y-1.5 text-xs text-zinc-400">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>App móvil para residentes y guardias</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Pagos en línea y recordatorios SMS</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-orange-400 text-[10px]"></i><span>Reportes de amenidades y reservaciones</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 6: Sports Clubs -->
+                <div class="glass-card p-6 rounded-2xl border border-zinc-800 solution-item" data-category="verticals">
+                    <div class="w-12 h-12 rounded-xl bg-stone-800 border border-stone-700 flex items-center justify-center text-amber-400 text-xl mb-4">
+                        <i class="fa-solid fa-volleyball"></i>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 px-2 py-0.5 rounded bg-stone-800 border border-stone-700">Deportes & Membresías</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Clubes y Centros Deportivos</h3>
+                    <p class="text-zinc-300 text-xs mt-2 leading-relaxed">
+                        Control automatizado de socios, reserva de canchas y gimnasios, venta de membresías, torniquetes de acceso y portal interactivo para atletas y clientes.
+                    </p>
+                    <ul class="mt-4 space-y-1.5 text-xs text-zinc-400">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i><span>Reservas en tiempo real vía App</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i><span>Cobros recurrentes con tarjeta</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i><span>Estadísticas de ocupación e ingresos</span></li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: PARTNER ALLIANCES & SOFTWARE STACK -->
+        <section id="section-alliances" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Aliados Estratégicos & Ecosistema Tecnológico</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm">
+                    Trabajamos de la mano con los principales proveedores globales de software empresarial e infraestructura en la nube.
+                </p>
+            </div>
+
+            <!-- Major Strategic Partners Banner -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Odoo Alliance Card -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-orange-900/40 relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-orange-600/10 rounded-full blur-2xl"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="px-3 py-1 rounded-full bg-orange-950/80 border border-orange-700/50 text-orange-300 font-bold text-xs flex items-center space-x-2">
+                            <i class="fa-solid fa-award"></i>
+                            <span>ERP Partner Especializado</span>
+                        </div>
+                        <span class="text-2xl font-black tracking-widest text-orange-400">odoo</span>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-white mb-2">Expertos en Implementación Odoo</h3>
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed mb-4">
+                        Simplificamos la gestión de tu negocio módulo a módulo. Odoo es la solución ERP integral que permite conectar tu contabilidad mexicana, inventarios en tiempo real, facturación CFDI 4.0 y CRM.
+                    </p>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
+                        <div class="p-2.5 rounded-lg bg-orange-950/30 border border-orange-800/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Módulo de Facturación SAT</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-orange-950/30 border border-orange-800/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Control de Inventario Multibodega</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-orange-950/30 border border-orange-800/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>CRM & Embudo de Ventas</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-orange-950/30 border border-orange-800/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Recursos Humanos & Nómina</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Laserfiche Alliance Card -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-zinc-700 relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-zinc-600/10 rounded-full blur-2xl"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-orange-400 font-bold text-xs flex items-center space-x-2">
+                            <i class="fa-solid fa-certificate"></i>
+                            <span>ECM & Digital Archiving Partner</span>
+                        </div>
+                        <span class="text-xl font-extrabold tracking-tight text-white">Laserfiche</span>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-white mb-2">Transformación Documental con Laserfiche</h3>
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed mb-4">
+                        Líder global en gestión de contenido empresarial. Transformamos procesos en papel en flujos digitales automatizados con la máxima seguridad, ideales para sector gobierno y corporativos.
+                    </p>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
+                        <div class="p-2.5 rounded-lg bg-zinc-800/60 border border-zinc-700 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Flujos Aprobatorios Digitales</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-zinc-800/60 border border-zinc-700 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Captura Inteligente OCR</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-zinc-800/60 border border-zinc-700 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Firma Electrónica Avanzada</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-zinc-800/60 border border-zinc-700 flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-orange-400"></i>
+                            <span>Cumplimiento Legal y Auditoría</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tech Stack Frameworks Grid -->
+            <div class="glass-panel p-6 rounded-2xl border border-zinc-800">
+                <h3 class="text-lg font-bold text-white mb-6 text-center">Tecnologías y Lenguajes de Desarrollo</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
+                    <div class="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/50 transition">
+                        <i class="fa-brands fa-python text-3xl text-orange-400 mb-2"></i>
+                        <p class="text-xs font-bold text-white">Python</p>
+                        <p class="text-[10px] text-zinc-400">RPA & Backend</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/50 transition">
+                        <i class="fa-brands fa-node-js text-3xl text-emerald-400 mb-2"></i>
+                        <p class="text-xs font-bold text-white">Node.js</p>
+                        <p class="text-[10px] text-zinc-400">APIs High-Speed</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/50 transition">
+                        <i class="fa-brands fa-react text-3xl text-orange-400 mb-2"></i>
+                        <p class="text-xs font-bold text-white">React / Native</p>
+                        <p class="text-[10px] text-zinc-400">Web & Apps Móviles</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/50 transition">
+                        <i class="fa-solid fa-mobile-screen text-3xl text-amber-400 mb-2"></i>
+                        <p class="text-xs font-bold text-white">Flutter / Android</p>
+                        <p class="text-[10px] text-zinc-400">Apps TekAsist GPS</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/50 transition">
+                        <i class="fa-brands fa-aws text-3xl text-orange-500 mb-2"></i>
+                        <p class="text-xs font-bold text-white">AWS Cloud</p>
+                        <p class="text-[10px] text-zinc-400">Infraestructura 99.9%</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/50 transition">
+                        <i class="fa-solid fa-database text-3xl text-zinc-300 mb-2"></i>
+                        <p class="text-xs font-bold text-white">PostgreSQL</p>
+                        <p class="text-[10px] text-zinc-400">Bases de Datos Robustas</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CLIENT CASOS DE ÉXITO & TESTIMONIALS -->
+        <section id="section-cases" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Casos de Éxito y Reseñas de Clientes</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm">
+                    Historias reales de organizaciones que transformaron su operación con Tekuno.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Case 1: Recruitment Tool Integration (Huitre au carré) -->
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-orange-950/80 text-orange-400 border border-orange-800 text-[10px] font-bold uppercase">
+                                Reclutamiento & SEO Web
+                            </span>
+                            <div class="flex text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Integración de Plataforma de Empleo sin Inactividad</h3>
+                        <blockquote class="text-zinc-300 text-xs sm:text-sm italic leading-relaxed mb-4">
+                            "Cuando cambiamos a nuestra nueva herramienta de reclutamiento, Tekuno aseguró una transición totalmente fluida. Construyeron una integración a la medida en nuestro sitio web que muestra nuestras vacantes para ambas divisiones, sin tiempo de inactividad y manteniendo intacto nuestro posicionamiento SEO en Google. Lograron un puntaje de velocidad de 99."
+                        </blockquote>
+                    </div>
+                    <div class="pt-4 border-t border-zinc-800 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-white">Florence Dussol</p>
+                            <p class="text-[11px] text-zinc-400">Huitre au carré</p>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-800">
+                            Score Velocidad: 99/100
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Case 2: Health Sector Dental Cabinet -->
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-zinc-800 text-zinc-200 border border-zinc-700 text-[10px] font-bold uppercase">
+                                Sector Salud & Citas
+                            </span>
+                            <div class="flex text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Presencia Digital e Innovación en Citas Médicas</h3>
+                        <blockquote class="text-zinc-300 text-xs sm:text-sm italic leading-relaxed mb-4">
+                            "Escucharon atentamente los requerimientos de nuestro proyecto y agregaron los toques innovadores para convertirlo en una verdadera joya. Saludamos su alta capacidad de respuesta y recomendamos ampliamente sus servicios de desarrollo."
+                        </blockquote>
+                    </div>
+                    <div class="pt-4 border-t border-zinc-800 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-white">On Quoc Nguyen</p>
+                            <p class="text-[11px] text-zinc-400">Cabinet dentaire Santé sourire</p>
+                        </div>
+                        <span class="text-xs font-bold text-orange-400 bg-orange-950/60 px-2.5 py-1 rounded border border-orange-800">
+                            +140% Conversión
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Case 3: Sports Club East -->
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-stone-800 text-amber-400 border border-stone-700 text-[10px] font-bold uppercase">
+                                Club Deportivo & Gestión
+                            </span>
+                            <div class="flex text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Asesoría de Alto Nivel y Agilidad Tecnológica</h3>
+                        <blockquote class="text-zinc-300 text-xs sm:text-sm italic leading-relaxed mb-4">
+                            "Disfrutamos sinceramente trabajar con el equipo de Tekuno. No solo fueron proactivos en la gestión de nuestras necesidades, sino excelentes asesores permitiéndonos alcanzar nuestros objetivos tecnológicos y de negocio. La mezcla perfecta de agilidad y alto nivel."
+                        </blockquote>
+                    </div>
+                    <div class="pt-4 border-t border-zinc-800 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-white">Dirección General</p>
+                            <p class="text-[11px] text-zinc-400">Club de Boxe de l'Est</p>
+                        </div>
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800">
+                            Membresías 100% Digitales
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Case 4: E-Commerce & Retail (Bloem / Cambium) -->
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-orange-950/80 text-orange-400 border border-orange-800 text-[10px] font-bold uppercase">
+                                Retail & E-Commerce
+                            </span>
+                            <div class="flex text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Transparencia, Reportes Semanales y Entrega Puntual</h3>
+                        <blockquote class="text-zinc-300 text-xs sm:text-sm italic leading-relaxed mb-4">
+                            "En ningún momento tuve que preguntarme sobre el estado del proyecto. Recibíamos un reporte de avance semanal con completa visibilidad. Todo fue entregado dentro del plazo y presupuesto acordados."
+                        </blockquote>
+                    </div>
+                    <div class="pt-4 border-t border-zinc-800 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-white">Equipo Comercial</p>
+                            <p class="text-[11px] text-zinc-400">Bloem & Cambium</p>
+                        </div>
+                        <span class="text-xs font-bold text-orange-400 bg-orange-950/60 px-2.5 py-1 rounded border border-orange-800">
+                            On-Time & On-Budget
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Client Logo Strip / Trust Indicators -->
+            <div class="glass-panel p-6 rounded-2xl border border-zinc-800 text-center">
+                <p class="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Sectores e Instituciones Atendidas</p>
+                <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 opacity-85">
+                    <span class="text-sm sm:text-base font-extrabold text-zinc-300 hover:text-orange-400 transition cursor-default flex items-center space-x-2"><i class="fa-solid fa-tooth text-orange-400"></i><span>Cabinet Santé</span></span>
+                    <span class="text-sm sm:text-base font-extrabold text-zinc-300 hover:text-orange-400 transition cursor-default flex items-center space-x-2"><i class="fa-solid fa-hand-fist text-orange-400"></i><span>Club de Boxe</span></span>
+                    <span class="text-sm sm:text-base font-extrabold text-zinc-300 hover:text-orange-400 transition cursor-default flex items-center space-x-2"><i class="fa-solid fa-leaf text-orange-400"></i><span>Bloem</span></span>
+                    <span class="text-sm sm:text-base font-extrabold text-zinc-300 hover:text-orange-400 transition cursor-default flex items-center space-x-2"><i class="fa-solid fa-tree text-orange-400"></i><span>Cambium</span></span>
+                    <span class="text-sm sm:text-base font-extrabold text-zinc-300 hover:text-orange-400 transition cursor-default flex items-center space-x-2"><i class="fa-solid fa-landmark text-orange-400"></i><span>Gobierno Municipal</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: EXECUTIVE ROI & SAVINGS CALCULATOR -->
+        <section id="section-roi" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Calculadora Ejecutiva de Impacto y ROI</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm">
+                    Estima los ahorros en horas de trabajo y retorno financiero al implementar soluciones Tekuno (Odoo, Laserfiche, RPA).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Interactive Controls Box -->
+                <div class="lg:col-span-5 glass-panel p-6 sm:p-8 rounded-3xl border border-zinc-800 space-y-6">
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2 border-b border-zinc-800 pb-3">
+                        <i class="fa-solid fa-sliders text-orange-400"></i>
+                        <span>Parámetros de la Organización</span>
+                    </h3>
+
+                    <!-- Slider 1: Employees -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label class="text-zinc-300">Número de Empleados / Operativos:</label>
+                            <span class="text-orange-400 font-bold" id="val-employees">25 personas</span>
+                        </div>
+                        <input type="range" id="input-employees" min="5" max="300" value="25" step="5" oninput="calculateROI()" class="w-full accent-orange-500 bg-zinc-800 rounded-lg cursor-pointer h-2">
+                    </div>
+
+                    <!-- Slider 2: Hours spent in manual tasks -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label class="text-zinc-300">Horas manuales por semana / empleado:</label>
+                            <span class="text-orange-400 font-bold" id="val-hours">12 hrs/semana</span>
+                        </div>
+                        <input type="range" id="input-hours" min="2" max="30" value="12" step="1" oninput="calculateROI()" class="w-full accent-orange-500 bg-zinc-800 rounded-lg cursor-pointer h-2">
+                    </div>
+
+                    <!-- Slider 3: Average Hourly Cost -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label class="text-zinc-300">Costo promedio hora/hombre ($ MXN):</label>
+                            <span class="text-orange-400 font-bold" id="val-cost">$180 MXN</span>
+                        </div>
+                        <input type="range" id="input-cost" min="80" max="600" value="180" step="10" oninput="calculateROI()" class="w-full accent-orange-500 bg-zinc-800 rounded-lg cursor-pointer h-2">
+                    </div>
+
+                    <!-- Radio Solution Target -->
+                    <div class="space-y-2 pt-2">
+                        <label class="text-xs font-semibold text-zinc-300 block">Solución Principal a Implementar:</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 flex items-center space-x-2 cursor-pointer hover:border-orange-500">
+                                <input type="radio" name="solution_type" value="rpa" checked onchange="calculateROI()" class="accent-orange-500">
+                                <span>Bot RPA / Chatbot</span>
+                            </label>
+                            <label class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 flex items-center space-x-2 cursor-pointer hover:border-orange-500">
+                                <input type="radio" name="solution_type" value="odoo" onchange="calculateROI()" class="accent-orange-500">
+                                <span>Odoo ERP</span>
+                            </label>
+                            <label class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 flex items-center space-x-2 cursor-pointer hover:border-orange-500">
+                                <input type="radio" name="solution_type" value="laserfiche" onchange="calculateROI()" class="accent-orange-500">
+                                <span>Laserfiche ECM</span>
+                            </label>
+                            <label class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 flex items-center space-x-2 cursor-pointer hover:border-orange-500">
+                                <input type="radio" name="solution_type" value="tekasist" onchange="calculateROI()" class="accent-orange-500">
+                                <span>TekAsist GPS</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Results Dashboard -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-zinc-800 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-8 opacity-10 text-orange-400 text-9xl font-black pointer-events-none">$</div>
+                        
+                        <p class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-1">Ahorro Financiero Anual Estimado</p>
+                        <div class="text-4xl sm:text-5xl font-black text-white tracking-tight" id="result-money-saved">
+                            $1,684,800 MXN
+                        </div>
+                        <p class="text-xs text-zinc-400 mt-2">
+                            Ahorro calculado tras automatizar un <span class="text-orange-400 font-bold" id="result-pct-efficiency">65%</span> de la carga manual repetitiva.
+                        </p>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-zinc-800">
+                            <div>
+                                <p class="text-[11px] text-zinc-400 font-medium">Horas Libres / Año</p>
+                                <p class="text-xl font-extrabold text-white mt-0.5" id="result-hours-saved">9,360 hrs</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-zinc-400 font-medium">Payback / Retorno</p>
+                                <p class="text-xl font-extrabold text-emerald-400 mt-0.5" id="result-payback">3.2 Meses</p>
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <p class="text-[11px] text-zinc-400 font-medium">ROI a 3 Años</p>
+                                <p class="text-xl font-extrabold text-orange-400 mt-0.5" id="result-roi-mult">4.8x</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Advice Box -->
+                    <div class="glass-card p-6 rounded-2xl border border-zinc-800 space-y-3">
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                            <span>Recomendación Estratégica Tekuno</span>
+                        </h4>
+                        <p class="text-xs text-zinc-300 leading-relaxed" id="roi-recommendation">
+                            Para una plantilla de 25 empleados con alta carga en captura y conciliaciones, la implementación de un <strong>Bot RPA</strong> permite recuperar la inversión en menos de 4 meses y redirigir al equipo a tareas de mayor valor comercial.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 6: INTERACTIVE DEMO SIMULATORS -->
+        <section id="section-demos" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Simulador Interactivo de Soluciones Tekuno</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm">
+                    Experimente el funcionamiento directo de TekAsist y el flujo de automatización de procesos en tiempo real.
+                </p>
+            </div>
+
+            <!-- Demo Tabs -->
+            <div class="flex justify-center space-x-3 border-b border-zinc-800 pb-4">
+                <button onclick="switchDemoTab('tekasist')" id="btn-demo-tekasist" class="demo-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-orange-500 text-zinc-950">
+                    <i class="fa-solid fa-mobile-screen mr-2"></i>TekAsist GPS App
+                </button>
+                <button onclick="switchDemoTab('rpa')" id="btn-demo-rpa" class="demo-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white">
+                    <i class="fa-solid fa-diagram-project mr-2"></i>Flujo RPA / Laserfiche
+                </button>
+            </div>
+
+            <!-- DEMO 1: TEKASIST GPS APP SIMULATOR -->
+            <div id="demo-tekasist-container" class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                <div class="md:col-span-6 space-y-4">
+                    <span class="px-3 py-1 rounded-full bg-orange-950/80 text-orange-400 border border-orange-800 text-xs font-bold">
+                        App Móvil TekAsist
+                    </span>
+                    <h3 class="text-2xl font-extrabold text-white">Control Digital de Asistencia con Seguridad GPS</h3>
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        <strong>TekAsist</strong> valida la presencia de los colaboradores dentro de la geocerca de la empresa en tiempo real, garantizando registros precisos, libres de fraudes y listos para exportar a nómina.
+                    </p>
+                    <div class="space-y-2 text-xs text-zinc-300">
+                        <div class="flex items-center space-x-2"><i class="fa-solid fa-location-dot text-orange-400"></i><span>Validación por coordenadas GPS exactas</span></div>
+                        <div class="flex items-center space-x-2"><i class="fa-solid fa-user-shield text-orange-400"></i><span>Privacidad garantizada (sin rastreo en segundo plano)</span></div>
+                        <div class="flex items-center space-x-2"><i class="fa-solid fa-bolt text-orange-400"></i><span>Registro en menos de 2 segundos</span></div>
+                    </div>
+                </div>
+
+                <!-- Simulated Smartphone Box -->
+                <div class="md:col-span-6 flex justify-center">
+                    <div class="w-72 sm:w-80 bg-zinc-950 rounded-[40px] p-4 border-4 border-zinc-700 shadow-glow relative">
+                        <!-- Camera Notch -->
+                        <div class="w-32 h-4 bg-zinc-800 mx-auto rounded-b-xl mb-4"></div>
+
+                        <!-- App Screen Content -->
+                        <div class="bg-zinc-900 rounded-[28px] p-5 space-y-4 text-center border border-zinc-800">
+                            <div class="flex items-center justify-between text-xs text-zinc-400">
+                                <span>TekAsist Mobile</span>
+                                <span class="text-emerald-400 font-bold"><i class="fa-solid fa-wifi"></i> Online</span>
+                            </div>
+
+                            <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-orange-600 to-orange-400 flex items-center justify-center text-zinc-950 text-2xl font-black shadow-glow">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-xs text-zinc-400">Colaborador:</p>
+                                <p class="text-sm font-bold text-white">Ing. Carlos Mendoza</p>
+                                <p class="text-[10px] text-zinc-400">Planta Puebla / Tekuno HQ</p>
+                            </div>
+
+                            <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-left text-[11px] space-y-1">
+                                <div class="flex justify-between">
+                                    <span class="text-zinc-400">Estatus GPS:</span>
+                                    <span class="text-emerald-400 font-bold" id="app-gps-status">Dentro de Zona (HQ)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-zinc-400">Hora Servidor:</span>
+                                    <span class="text-white font-semibold" id="app-clock">12:00:00 PM</span>
+                                </div>
+                            </div>
+
+                            <button onclick="triggerCheckIn()" id="btn-checkin" class="w-full py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-orange-400 text-zinc-950 font-black text-xs hover:opacity-90 shadow-glow transition flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-fingerprint"></i>
+                                <span>REGISTRAR ASISTENCIA</span>
+                            </button>
+
+                            <!-- Live Simulated Log -->
+                            <div id="app-log-box" class="h-20 bg-zinc-950 rounded-xl p-2.5 overflow-y-auto text-left text-[10px] font-mono text-orange-400 border border-zinc-800/80">
+                                > Listo para marcar asistencia...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEMO 2: RPA / LASERFICHE WORKFLOW FLOW -->
+            <div id="demo-rpa-container" class="hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl border border-zinc-800 space-y-4">
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-gears text-orange-400"></i>
+                        <span>Simulador de Flujo Documental Laserfiche & Bot RPA</span>
+                    </h3>
+                    <p class="text-xs text-zinc-300">
+                        Haga clic en cada fase para simular cómo un bot extrae datos de una factura PDF, valida en el SAT y registra automáticamente en Odoo.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div onclick="simulateRpaStep(1)" id="rpa-step-1" class="cursor-pointer p-4 rounded-xl bg-orange-950/80 border-2 border-orange-400 text-center space-y-2 transition">
+                            <span class="w-6 h-6 rounded-full bg-orange-400 text-zinc-950 font-bold text-xs inline-flex items-center justify-center">1</span>
+                            <p class="text-xs font-bold text-white">Recepción de Factura</p>
+                            <p class="text-[10px] text-zinc-300">Entrada vía Correo / PDF</p>
+                        </div>
+                        <div onclick="simulateRpaStep(2)" id="rpa-step-2" class="cursor-pointer p-4 rounded-xl bg-zinc-900 border border-zinc-800 text-center space-y-2 hover:border-orange-500 transition">
+                            <span class="w-6 h-6 rounded-full bg-zinc-700 text-zinc-200 font-bold text-xs inline-flex items-center justify-center">2</span>
+                            <p class="text-xs font-bold text-white">Lectura OCR Bot</p>
+                            <p class="text-[10px] text-zinc-400">Extracción de CFDI & Folio</p>
+                        </div>
+                        <div onclick="simulateRpaStep(3)" id="rpa-step-3" class="cursor-pointer p-4 rounded-xl bg-zinc-900 border border-zinc-800 text-center space-y-2 hover:border-orange-500 transition">
+                            <span class="w-6 h-6 rounded-full bg-zinc-700 text-zinc-200 font-bold text-xs inline-flex items-center justify-center">3</span>
+                            <p class="text-xs font-bold text-white">Validación SAT</p>
+                            <p class="text-[10px] text-zinc-400">Verificación EFOS / EDO</p>
+                        </div>
+                        <div onclick="simulateRpaStep(4)" id="rpa-step-4" class="cursor-pointer p-4 rounded-xl bg-zinc-900 border border-zinc-800 text-center space-y-2 hover:border-orange-500 transition">
+                            <span class="w-6 h-6 rounded-full bg-zinc-700 text-zinc-200 font-bold text-xs inline-flex items-center justify-center">4</span>
+                            <p class="text-xs font-bold text-white">Registro ERP Odoo</p>
+                            <p class="text-[10px] text-zinc-400">Asiento Contable Automático</p>
+                        </div>
+                    </div>
+
+                    <!-- Step Output Status -->
+                    <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-mono text-orange-400 space-y-1" id="rpa-step-output">
+                        <p class="text-white font-bold">[FASE 1]: Documento "Factura_F7822.pdf" recibido en buzón empresarial.</p>
+                        <p class="text-zinc-400">> El bot de Laserfiche ha detectado el archivo y lo ha archivado en la carpeta digital correspondiente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PROPOSAL GENERATOR MODAL -->
+    <div id="proposal-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel max-w-2xl w-full rounded-3xl border border-zinc-700 p-6 sm:p-8 space-y-6 shadow-glow-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center text-zinc-950 font-black">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Generador de Propuesta Ejecutiva Tekuno</h3>
+                        <p class="text-xs text-zinc-400">Configure la solución ideal para su presentación o cliente</p>
+                    </div>
+                </div>
+                <button onclick="closeProposalModal()" class="text-zinc-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-zinc-300 block mb-1">Nombre de la Empresa u Organización:</label>
+                    <input type="text" id="prop-company" value="Corporativo Ejemplo S.A. de C.V." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white focus:border-orange-400 outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-zinc-300 block mb-1">Sector Industrial:</label>
+                    <select id="prop-sector" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white focus:border-orange-400 outline-none">
+                        <option value="Servicios Empresariales & Corporativos">Servicios Empresariales & Corporativos</option>
+                        <option value="Salud y Clínicas Especializadas">Salud y Clínicas Especializadas</option>
+                        <option value="Sector Público & Gobierno">Sector Público & Gobierno</option>
+                        <option value="Fraccionamientos y Administradoras Residenciales">Fraccionamientos y Residenciales</option>
+                        <option value="Clubes y Centros Deportivos">Clubes y Centros Deportivos</option>
+                        <option value="Retail & Comercio Electrónico">Retail & Comercio Electrónico</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-zinc-300 block mb-2">Soluciones Requeridas:</label>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <label class="p-2 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="chk-odoo" checked class="accent-orange-500">
+                            <span>Implementación Odoo ERP</span>
+                        </label>
+                        <label class="p-2 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="chk-laserfiche" checked class="accent-orange-500">
+                            <span>Laserfiche ECM & Digitalización</span>
+                        </label>
+                        <label class="p-2 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="chk-rpa" checked class="accent-orange-500">
+                            <span>Bot RPA / Automatización</span>
+                        </label>
+                        <label class="p-2 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="chk-tekasist" class="accent-orange-500">
+                            <span>TekAsist GPS Control Asistencia</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Preview Box -->
+            <div id="proposal-output" class="hidden p-4 rounded-xl bg-zinc-950 border border-orange-800/60 text-xs space-y-2 text-zinc-300">
+                <!-- Generated dynamically via JS -->
+            </div>
+
+            <div class="flex items-center justify-end space-x-3 border-t border-zinc-800 pt-4">
+                <button onclick="closeProposalModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-800 text-zinc-300 hover:text-white">
+                    Cerrar
+                </button>
+                <button onclick="generateProposalDoc()" class="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-orange-400 text-zinc-950 shadow-glow hover:opacity-95">
+                    Generar Resumen de Arquitectura
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER & EXECUTIVE CONTACT INFO -->
+    <footer class="glass-panel border-t border-zinc-800/80 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                <div class="md:col-span-6 space-y-2">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center text-zinc-950 font-black text-lg">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <span class="text-xl font-extrabold text-white">Tekuno</span>
+                    </div>
+                    <p class="text-xs text-zinc-400">
+                        Tu socio estratégico en software a la medida, ERP Odoo, gestión documental Laserfiche y automatización de procesos en México.
+                    </p>
+                </div>
+
+                <div class="md:col-span-6 flex flex-wrap md:justify-end items-center gap-4 text-xs text-zinc-300">
+                    <a href="mailto:s.ibarra@tekuno.mx" class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-orange-500 transition">
+                        <i class="fa-solid fa-envelope text-orange-400"></i>
+                        <span>s.ibarra@tekuno.mx</span>
+                    </a>
+                    <a href="mailto:licenciamiento@tekuno.mx" class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-orange-500 transition">
+                        <i class="fa-solid fa-key text-orange-400"></i>
+                        <span>licenciamiento@tekuno.mx</span>
+                    </a>
+                    <a href="tel:+522221316460" class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-orange-500 transition">
+                        <i class="fa-solid fa-phone text-orange-400"></i>
+                        <span>+52 222 131 6460</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-zinc-800/60 flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-500">
+                <p>© 2026 Tekuno S.A. de C.V. Todos los derechos reservados. Presentación ejecutiva optimizada.</p>
+                <p class="mt-2 sm:mt-0 font-medium text-zinc-400">Puebla / México · Soluciones Tecnológicas de Alto Impacto</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let efficiencyChartInstance = null;
+        let sectorChartInstance = null;
+        let roiTimelineChartInstance = null;
+        let clockTimer = null;
+
+        // Window Load Event Handler
+        window.onload = function () {
+            initCharts();
+            calculateROI();
+            startClock();
+        };
+
+        function switchSection(sectionId) {
+            // Hide all tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+
+            // Show selected tab content
+            const activeTab = document.getElementById(`section-${sectionId}`);
+            if (activeTab) {
+                activeTab.classList.remove('hidden');
+            }
+
+            // Update Navigation Button Active States
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('text-orange-400', 'bg-zinc-800/60');
+                link.classList.add('text-zinc-300');
+            });
+
+            const activeBtn = document.getElementById(`nav-${sectionId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-zinc-300');
+                activeBtn.classList.add('text-orange-400', 'bg-zinc-800/60');
+            }
+
+            // Re-render charts if overview section
+            if (sectionId === 'overview') {
+                setTimeout(() => {
+                    if (efficiencyChartInstance) efficiencyChartInstance.resize();
+                    if (sectorChartInstance) sectorChartInstance.resize();
+                    if (roiTimelineChartInstance) roiTimelineChartInstance.resize();
+                }, 100);
+            }
+        }
+
+        function initCharts() {
+            // Chart 1: Efficiency Before vs After Tekuno (Orange & Grey Theme)
+            const ctx1 = document.getElementById('efficiencyChart').getContext('2d');
+            efficiencyChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Finanzas y Nómina', 'Gestión Documental', 'Atención e Inquietudes', 'Control de Inventarios', 'Trámites Operativos'],
+                    datasets: [
+                        {
+                            label: 'Antes de Tekuno (Horas/Semana)',
+                            data: [38, 45, 30, 42, 50],
+                            backgroundColor: 'rgba(113, 113, 122, 0.5)',
+                            borderColor: '#71717a',
+                            borderWidth: 1.5,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Con Tekuno (Odoo / Laserfiche / RPA)',
+                            data: [12, 10, 8, 14, 15],
+                            backgroundColor: 'rgba(249, 115, 22, 0.85)',
+                            borderColor: '#f97316',
+                            borderWidth: 1.5,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e4e4e7', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#a1a1aa', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#a1a1aa', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+
+            // Chart 2: Client Sector Distribution (Orange & Warm Grey shades)
+            const ctx2 = document.getElementById('sectorChart').getContext('2d');
+            sectorChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Servicios & PYMEs', 'Salud y Clínicas', 'Residencial & Fracc.', 'Centros Deportivos', 'Gobierno y Público'],
+                    datasets: [{
+                        data: [35, 20, 20, 15, 10],
+                        backgroundColor: [
+                            '#ea580c',
+                            '#f97316',
+                            '#fb923c',
+                            '#d4d4d8',
+                            '#71717a'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#1a1c23'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#e4e4e7', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        }
+                    },
+                    cutout: '68%'
+                }
+            });
+
+            // Chart 3: ROI Accumulation Timeline
+            const ctx3 = document.getElementById('roiTimelineChart').getContext('2d');
+            roiTimelineChartInstance = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: ['Mes 1', 'Mes 3', 'Mes 6', 'Mes 9', 'Mes 12', 'Mes 18', 'Mes 24'],
+                    datasets: [{
+                        label: 'Ahorro Financiero Acumulado ($ MXN)',
+                        data: [-120000, 40000, 380000, 720000, 1150000, 1980000, 2850000],
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.15)',
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#ea580c',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e4e4e7', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#a1a1aa', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#a1a1aa', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function filterSolutions(category) {
+            const items = document.querySelectorAll('.solution-item');
+            const btns = document.querySelectorAll('.sol-filter-btn');
+
+            btns.forEach(btn => {
+                btn.classList.remove('bg-orange-500', 'text-zinc-950');
+                btn.classList.add('bg-zinc-800', 'text-zinc-300');
+            });
+
+            event.target.classList.remove('bg-zinc-800', 'text-zinc-300');
+            event.target.classList.add('bg-orange-500', 'text-zinc-950');
+
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function calculateROI() {
+            const employees = parseInt(document.getElementById('input-employees').value);
+            const hours = parseInt(document.getElementById('input-hours').value);
+            const cost = parseInt(document.getElementById('input-cost').value);
+            const solutionType = document.querySelector('input[name="solution_type"]:checked').value;
+
+            // UI Labels update
+            document.getElementById('val-employees').innerText = `${employees} personas`;
+            document.getElementById('val-hours').innerText = `${hours} hrs/semana`;
+            document.getElementById('val-cost').innerText = `$${cost} MXN`;
+
+            let efficiencyFactor = 0.65; // Default 65% for RPA
+            let recoText = "";
+
+            if (solutionType === 'rpa') {
+                efficiencyFactor = 0.70;
+                recoText = `Para una plantilla de ${employees} colaboradores, un <strong>Bot RPA</strong> elimina la carga en captura manual, alcanzando el retorno de inversión en alrededor de 3 meses.`;
+            } else if (solutionType === 'odoo') {
+                efficiencyFactor = 0.60;
+                recoText = `La implementación de <strong>Odoo ERP</strong> unifica la contabilidad CFDI 4.0 y ventas de sus ${employees} usuarios, reduciendo reprocesos en un 60%.`;
+            } else if (solutionType === 'laserfiche') {
+                efficiencyFactor = 0.65;
+                recoText = `Con <strong>Laserfiche ECM</strong>, la gestión documental se vuelve 100% digital, eliminando el uso de papel y acelerando aprobaciones en la organización.`;
+            } else if (solutionType === 'tekasist') {
+                efficiencyFactor = 0.50;
+                recoText = `La adopción de <strong>TekAsist GPS</strong> optimiza el registro de asistencia de sus ${employees} colaboradores y automatiza el envío de incidencias a nómina.`;
+            }
+
+            const totalHoursPerYear = employees * hours * 52;
+            const savedHoursPerYear = Math.round(totalHoursPerYear * efficiencyFactor);
+            const moneySavedPerYear = Math.round(savedHoursPerYear * cost);
+            
+            // Estimated payback calculation
+            const estimatedCost = 150000 + (employees * 1200);
+            const paybackMonths = Math.max(1.8, ((estimatedCost / moneySavedPerYear) * 12)).toFixed(1);
+            const roiMult = ((moneySavedPerYear * 3) / estimatedCost).toFixed(1);
+
+            // Output to UI
+            document.getElementById('result-money-saved').innerText = `$${moneySavedPerYear.toLocaleString('es-MX')} MXN`;
+            document.getElementById('result-hours-saved').innerText = `${savedHoursPerYear.toLocaleString('es-MX')} hrs`;
+            document.getElementById('result-pct-efficiency').innerText = `${Math.round(efficiencyFactor * 100)}%`;
+            document.getElementById('result-payback').innerText = `${paybackMonths} Meses`;
+            document.getElementById('result-roi-mult').innerText = `${roiMult}x`;
+            document.getElementById('roi-recommendation').innerHTML = recoText;
+        }
+
+        function startClock() {
+            if (clockTimer) clearInterval(clockTimer);
+            clockTimer = setInterval(() => {
+                const now = new Date();
+                const clockEl = document.getElementById('app-clock');
+                if (clockEl) {
+                    clockEl.innerText = now.toLocaleTimeString('es-MX');
+                }
+            }, 1000);
+        }
+
+        function triggerCheckIn() {
+            const logBox = document.getElementById('app-log-box');
+            const now = new Date().toLocaleTimeString('es-MX');
+
+            logBox.innerHTML = `<p class="text-amber-400">> Solicitando ubicación GPS en tiempo real...</p>` + logBox.innerHTML;
+
+            setTimeout(() => {
+                logBox.innerHTML = `<p class="text-orange-300">> GPS Validado: Lat 19.0437, Lon -98.1981 (Dentro de Tekuno HQ)</p>` + logBox.innerHTML;
+            }, 600);
+
+            setTimeout(() => {
+                logBox.innerHTML = `<p class="text-emerald-400 font-bold">> [ÉXITO ${now}]: Asistencia Entrada Registrada.</p>` + logBox.innerHTML;
+            }, 1200);
+        }
+
+        function switchDemoTab(demoType) {
+            const tekasistContainer = document.getElementById('demo-tekasist-container');
+            const rpaContainer = document.getElementById('demo-rpa-container');
+
+            const btnTekasist = document.getElementById('btn-demo-tekasist');
+            const btnRpa = document.getElementById('btn-demo-rpa');
+
+            if (demoType === 'tekasist') {
+                tekasistContainer.classList.remove('hidden');
+                rpaContainer.classList.add('hidden');
+
+                btnTekasist.className = "demo-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-orange-500 text-zinc-950";
+                btnRpa.className = "demo-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white";
+            } else {
+                tekasistContainer.classList.add('hidden');
+                rpaContainer.classList.remove('hidden');
+
+                btnRpa.className = "demo-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-orange-500 text-zinc-950";
+                btnTekasist.className = "demo-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-zinc-300 hover:text-white";
+            }
+        }
+
+        function simulateRpaStep(stepNum) {
+            const outputBox = document.getElementById('rpa-step-output');
+            
+            // Reset border highlights
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`rpa-step-${i}`);
+                el.className = "cursor-pointer p-4 rounded-xl bg-zinc-900 border border-zinc-800 text-center space-y-2 hover:border-orange-500 transition";
+            }
+
+            const activeEl = document.getElementById(`rpa-step-${stepNum}`);
+            activeEl.className = "cursor-pointer p-4 rounded-xl bg-orange-950/80 border-2 border-orange-400 text-center space-y-2 transition";
+
+            if (stepNum === 1) {
+                outputBox.innerHTML = `
+                    <p class="text-white font-bold">[FASE 1]: Recepción de Factura Digital</p>
+                    <p class="text-zinc-400">> Captura de correo con adjunto "Factura_Proveedor_98.pdf" en Laserfiche ECM.</p>
+                `;
+            } else if (stepNum === 2) {
+                outputBox.innerHTML = `
+                    <p class="text-white font-bold">[FASE 2]: Procesamiento OCR & Extracción Bot</p>
+                    <p class="text-orange-300">> Datos extraídos: RFC: ABC123456789, Folio Fiscal UUID: 8D72A-99B, Monto: $48,200.00 MXN.</p>
+                `;
+            } else if (stepNum === 3) {
+                outputBox.innerHTML = `
+                    <p class="text-white font-bold">[FASE 3]: Validación Automatizada en portal SAT</p>
+                    <p class="text-emerald-400">> Estado SAT: VIGENTE. RFC emisor verificado en lista de contribuyentes cumplidos.</p>
+                `;
+            } else if (stepNum === 4) {
+                outputBox.innerHTML = `
+                    <p class="text-white font-bold">[FASE 4]: Asiento Contable Automático en Odoo ERP</p>
+                    <p class="text-emerald-400">> Póliza creada automáticamente #POL-2026-089. Notificación enviada al Director Financiero.</p>
+                `;
+            }
+        }
+
+        function openProposalModal() {
+            document.getElementById('proposal-modal').classList.remove('hidden');
+        }
+
+        function closeProposalModal() {
+            document.getElementById('proposal-modal').classList.add('hidden');
+        }
+
+        function generateProposalDoc() {
+            const company = document.getElementById('prop-company').value || 'Empresa Cliente';
+            const sector = document.getElementById('prop-sector').value;
+
+            const chkOdoo = document.getElementById('chk-odoo').checked;
+            const chkLaserfiche = document.getElementById('chk-laserfiche').checked;
+            const chkRpa = document.getElementById('chk-rpa').checked;
+            const chkTekasist = document.getElementById('chk-tekasist').checked;
+
+            let techStack = [];
+            if (chkOdoo) techStack.push("Odoo ERP (Facturación & Contabilidad SAT)");
+            if (chkLaserfiche) techStack.push("Laserfiche ECM (Gestión Documental)");
+            if (chkRpa) techStack.push("Bots RPA de Automatización");
+            if (chkTekasist) techStack.push("TekAsist GPS Control de Asistencia");
+
+            const output = document.getElementById('proposal-output');
+            output.classList.remove('hidden');
+            output.innerHTML = `
+                <div class="font-bold text-white text-sm border-b border-zinc-800 pb-2">
+                    <i class="fa-solid fa-file-contract text-orange-400 mr-2"></i>Propuesta Tecnológica Personalizada para ${company}
+                </div>
+                <p><strong>Sector:</strong> ${sector}</p>
+                <p><strong>Arquitectura Recomendada:</strong></p>
+                <ul class="list-disc list-inside space-y-1 text-orange-400">
+                    ${techStack.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+                <p class="pt-2 text-[11px] text-zinc-400 border-t border-zinc-800">
+                    Entregables incluidos: Análisis de requerimientos, migración de datos sin inactividad, capacitación de personal y soporte continuo con reporte semanal.
+                </p>
+            `;
+        }
+
+        function togglePresentationMode() {
+            const btn = document.getElementById('btn-presentation');
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Fullscreen request failed");
+                });
+                btn.innerHTML = `<i class="fa-solid fa-compress text-orange-400"></i><span>Salir de Presentación</span>`;
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                btn.innerHTML = `<i class="fa-solid fa-expand text-orange-400"></i><span>Modo Presentación CEO</span>`;
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
